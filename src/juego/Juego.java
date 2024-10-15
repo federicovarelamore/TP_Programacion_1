@@ -45,14 +45,14 @@ public class Juego extends InterfaceJuego
     // Crear la casa de los Gnomos
     casaGnomos = new CasaGnomos(375, 300); // Ubicación de la casa en la parte superior
 
-        // Crear algunos gnomos
+    // Crear gnomos iniciales
     for (int i = 0; i < 5; i++) {
         gnomos.add(new Gnomo(200 + (i * 100), 400)); // Posiciones iniciales de los gnomos
     }
 
-    // Crear algunas tortugas 
-    for (int i = 0; i < 3; i++) {
-        tortugas.add(new Tortuga(150 + (i * 200), 100)); // Posiciones iniciales de las tortugas
+     // Crear algunas tortugas iniciales
+     for (int i = 0; i < 3; i++) {
+        tortugas.add(new Tortuga(150 + (i * 200), 100)); // Posiciones iniciales
     }
 
     // Inicia el juego!
@@ -63,52 +63,124 @@ public class Juego extends InterfaceJuego
     /** MÉTODOS **/
     /*************/ 
 
-	// Crear las islas en forma de pirámide
+// Crear las islas en forma de pirámide
 private void crearIslas() {
-    // Base de la pirámide (5 islas)
-    islas.add(new Isla(150, 500, 100, 20)); // Isla 1 (fila inferior)
-    islas.add(new Isla(300, 500, 100, 20)); // Isla 2
-    islas.add(new Isla(450, 500, 100, 20)); // Isla 3
-    islas.add(new Isla(600, 500, 100, 20)); // Isla 4
-    islas.add(new Isla(750, 500, 100, 20)); // Isla 5
+    // Dimensiones de la pantalla
+    int alturaPantalla = entorno.alto();
+    int anchuraPantalla = entorno.ancho();
 
-    // Segunda fila (4 islas)
-    islas.add(new Isla(200, 450, 100, 20)); // Isla 1 (segunda fila)
-    islas.add(new Isla(350, 450, 100, 20)); // Isla 2
-    islas.add(new Isla(500, 450, 100, 20)); // Isla 3
-    islas.add(new Isla(650, 450, 100, 20)); // Isla 4
+    // Dimensiones de las islas
+    int anchoIsla = 90;
+    int altoIsla = 20;
 
-    // Tercera fila (3 islas)
-    islas.add(new Isla(250, 400, 100, 20)); // Isla 1 (tercera fila)
-    islas.add(new Isla(400, 400, 100, 20)); // Isla 2
-    islas.add(new Isla(550, 400, 100, 20)); // Isla 3
+    // Espacio vertical entre filas
+    int espacioVertical = 100;
 
-    // Cuarta fila (2 islas)
-    islas.add(new Isla(300, 350, 100, 20)); // Isla 1 (cuarta fila)
-    islas.add(new Isla(450, 350, 100, 20)); // Isla 2
+    // Inicializar la posición Y para la primera fila (fila más baja)
+    int yPosicion = alturaPantalla - altoIsla;
 
-    // Quinta fila (1 isla, la cima)
-    islas.add(new Isla(375, 300, 100, 20)); // Isla única (cima)
+    // Número de islas por fila, de la base a la cima
+    int[] numIslasPorFila = {5, 4, 3, 2, 1}; // Pirámide
+
+    // Crear islas para cada fila
+    for (int fila = 0; fila < numIslasPorFila.length; fila++) {
+        int numIslas = numIslasPorFila[fila];
+
+        // Ajuste especial para la fila inferior (base)
+        int espacioEntreIslas;
+        if (fila == 0) {
+            // Si es la última fila (base), distribuir las islas para que ocupen todo el ancho
+            espacioEntreIslas = (anchuraPantalla - (numIslas * anchoIsla)) / (numIslas - 1);
+        } else {
+            // Para las demás filas
+            espacioEntreIslas = (anchuraPantalla - (numIslas * anchoIsla)) / (numIslas + 1);
+        }
+
+        // Crear las islas en la fila actual
+        for (int i = 0; i < numIslas; i++) {
+            int xPosicion;
+            if (fila == 0) {
+                // Fila inferior: asegurar que cubra todo el ancho
+                xPosicion = i * (anchoIsla + espacioEntreIslas);
+            } else {
+                // Filas superiores: usar el cálculo habitual con espacio al inicio
+                xPosicion = (i * (anchoIsla + espacioEntreIslas)) + espacioEntreIslas;
+            }
+
+            islas.add(new Isla(xPosicion, yPosicion, anchoIsla, altoIsla));
+        }
+
+        // Bajar la posición Y para la siguiente fila
+        yPosicion -= (altoIsla + espacioVertical);
+    }
+
+    // Obtener la isla superior (única en la cima)
+    Isla islaSuperior = islas.get(islas.size() - 1); // Última isla agregada (la única en la cima)
+
+    // Crear la casa de los Gnomos centrada en la isla superior
+    casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusta el -30 según el tamaño de la casa
 }
+
 
 private void respawnearTortuga() {
-    double xRandom = Math.random() * 800; // Genera una posición aleatoria en X
-    tortugas.add(new Tortuga(xRandom, 0)); // La tortuga respawnea desde la parte superior
+    // Generar un número aleatorio de isla (evitamos la primera fila, donde está la casa de los gnomos)
+    int indiceIsla = (int) (Math.random() * (islas.size() - 5)) + 5; // Evitar las primeras 5 islas
+    Isla islaSeleccionada = islas.get(indiceIsla);
+    
+    // Calcula una posición X aleatoria dentro de la mitad del ancho de la isla seleccionada.
+    // la tortuga aparece en una posición aleatoria en la isla, pero dentro del rango delimitado
+    // centrado en el medio de la isla (restando un cuarto del ancho para limitar la dispersión)
+    double posicionX = islaSeleccionada.getX() + (Math.random() * islaSeleccionada.getAncho() / 2) - islaSeleccionada.getAncho() / 4;
+    
+    // Crea una nueva Tortuga en la posición X calculada y en la posición Y
+    // justo encima de la isla (altura de la isla dividida entre 2, para que la tortuga aparezca sobre la isla).
+    tortugas.add(new Tortuga(posicionX, islaSeleccionada.getY() - islaSeleccionada.getAlto() / 2));
+
+    
 }
 
- // Actualiza la posición de Pep
-    private void actualizarPep() {
-        if (entorno.estaPresionada('a') || entorno.sePresiono(entorno.TECLA_IZQUIERDA)){
-            pep.moverIzquierda(); // Mover a la izquierda
-        }
-        if (entorno.estaPresionada('d') || entorno.sePresiono(entorno.TECLA_DERECHA)) {
-            pep.moverDerecha(); // Mover a la derecha
-        }
-        if (entorno.sePresiono(entorno.TECLA_ARRIBA) || entorno.sePresiono(entorno.TECLA_ESPACIO)) {
-            pep.saltar(); // Saltar
-        }
-        pep.actualizar(); // Actualizar la posición de Pep
+// Actualiza la posición de Pep
+private void actualizarPep() {
+    // Mover a la izquierda si se mantiene presionada 'a' o la tecla izquierda
+    if (entorno.estaPresionada('a') || entorno.estaPresionada(entorno.TECLA_IZQUIERDA)) {
+        pep.moverIzquierda(); // Movimiento continuo a la izquierda mientras esté presionada
     }
+    // Si se presiona solo una vez, mover un casillero
+    else if (entorno.sePresiono('a') || entorno.sePresiono(entorno.TECLA_IZQUIERDA)) {
+        pep.moverIzquierda(true); // Mover solo un casillero si se presiona una vez
+    }
+
+    // Mover a la derecha si se mantiene presionada 'd' o la tecla derecha
+    if (entorno.estaPresionada('d') || entorno.estaPresionada(entorno.TECLA_DERECHA)) {
+        pep.moverDerecha(); // Movimiento continuo a la derecha mientras esté presionada
+    }
+    // Si se presiona solo una vez, mover un casillero
+    else if (entorno.sePresiono('d') || entorno.sePresiono(entorno.TECLA_DERECHA)) {
+        pep.moverDerecha(true); // Mover solo un casillero si se presiona una vez
+    }
+
+    // Saltar si se presiona la tecla de salto
+    if (entorno.sePresiono(entorno.TECLA_ARRIBA) || entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+        pep.saltar(); // Saltar
+    }
+    boolean enElAire = true;
+    // Detectar colisiones con las islas
+    for (Isla isla : islas) {
+        if (pep.colisionaCon(isla)) {
+            pep.setY(isla.getY() - 30); // Colocar a Pep justo encima de la isla
+           // pep.setVelocidadY(0); // Detener la caída
+            pep.setSaltando(false); // Permitir que Pep vuelva a saltar
+             enElAire = false; // Pep está en el suelo (sobre una isla)
+        }
+    }
+
+    // Si Pep no colisiona con ninguna isla, sigue en el aire
+    if (enElAire) {
+        pep.setSaltando(true); // Mantener el salto en curso
+    }
+
+    pep.actualizar(); // Actualizar la posición de Pep
+}
 
     // Dibujar todos los objetos en pantalla
     private void dibujarObjetos() {
@@ -149,47 +221,37 @@ private void respawnearTortuga() {
             // Verificar si el gnomo llegó al borde de una isla
             for (Isla isla : islas) {
                 if (gnomo.llegoAlBorde(isla)) {
-                    gnomo.cambiarDireccion(); // Cambia la dirección si llegó al borde
+                    gnomo.caer(); // Cae si llegó al borde
                 }
                 // Verificar si el gnomo aterriza sobre una isla
                 if (gnomo.aterrizoSobreIsla(isla)) {
-                    gnomo.setEnElAire(false); // No está en el aire si aterriza
+                    gnomo.setEnElAire(false); // No está en el aire si aterrizó
                 }
             }
         }
 
 		// Actualizar la posición de las tortugas
-        for (Tortuga tortuga : tortugas) {
-            tortuga.moverLateral();
+         for (Tortuga tortuga : tortugas) {
+
             tortuga.caer(); // Caer si está en el aire
 
-            // Verificar si la tortuga aterriza sobre una isla
             for (Isla isla : islas) {
-                if (tortuga.aterrizoSobreIsla(isla)) {
-                    tortuga.setEnElAire(false); // No está en el aire si aterriza
+                if (tortuga.aterrizoSobreIsla(isla)) {// Verificar si la tortuga aterriza sobre una isla
+                    tortuga.setEnElAire(false); // La tortuga ha aterrizado
+                    tortuga.moverLateral(isla); // Moverse lateralmente en la isla
+                    break; // Una vez que la tortuga aterriza, no necesita seguir revisando más islas
                 }
             }
         }
         
          // Respawn gnomos de la casa
-         if (Math.random() < 0.05) { // 5% de probabilidad de respawnear un gnomo en cada tick
+         if (Math.random() < 0.01) { // 1% de probabilidad de respawnear un gnomo en cada tick
             gnomos.add(casaGnomos.respawnearGnomo());
         }
 
         // Respawn tortugas
-        if (Math.random() < 0.1) { // 10% de probabilidad de respawnear una tortuga en cada tick
+        if (Math.random() < 0.02) { // 2% de probabilidad de respawnear una tortuga en cada tick
             respawnearTortuga();
-        }
-
-        // Actualizar tortugas
-        for (Tortuga tortuga : tortugas) {
-            tortuga.moverLateral();
-            tortuga.caer();
-            for (Isla isla : islas) {
-                if (tortuga.aterrizoSobreIsla(isla)) {
-                    tortuga.setEnElAire(false);
-                }
-            }
         }
 
 		 // Dibujar todos los objetos en pantalla

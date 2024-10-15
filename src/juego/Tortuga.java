@@ -53,6 +53,15 @@ public class Tortuga {
         this.x += velocidadX;
     }
 
+    public void moverLateral(Isla isla) {
+        this.x += velocidadX;
+    
+        // Si la tortuga llega al borde de la isla, cambia de dirección
+        if (this.x <= isla.getX() - isla.getAncho() / 2 || this.x >= isla.getX() + isla.getAncho() / 2) {
+            this.velocidadX = -this.velocidadX; // Cambia de dirección al llegar al borde de la isla
+        }
+    }
+
     // Hacer caer a la tortuga si está en el aire
     public void caer() {
         if (enElAire) {
