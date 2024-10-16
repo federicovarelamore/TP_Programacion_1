@@ -1,6 +1,8 @@
 package juego;
 import java.awt.Color;
 import entorno.Entorno;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class Pep {
 
@@ -11,6 +13,7 @@ public class Pep {
     private double x, y; // Posición de Pep en la pantalla
     private double velocidadX, velocidadY; // Velocidades de movimiento horizontal y vertical
     private boolean saltando; // Para saber si Pep está en el aire o no
+    private Image imagenPep;
  
     /*********************/
     /**GETTERS Y SETTERS**/
@@ -58,6 +61,9 @@ public class Pep {
         this.velocidadX = 0; // Inicialmente sin velocidad horizontal
         this.velocidadY = 0; // Inicialmente sin velocidad vertical
         this.saltando = false; // Pep no está saltando al inicio
+
+         // Cargar la imagen desde el archivo
+         this.imagenPep = new ImageIcon(getClass().getResource("/juego/imagenes/warrior.png")).getImage();
     }
     
 
@@ -125,6 +131,9 @@ public class Pep {
 
     // Dibuja a Pep en la pantalla
     public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(this.x, this.y, 30, 50, 0, java.awt.Color.RED); // Dibuja un rectángulo que representa a Pep
+        entorno.dibujarRectangulo(this.x, this.y, 30, 50, 0, java.awt.Color.white); // Dibuja un rectángulo que representa a Pep
+
+        // Dibuja la imagen de Pep
+        entorno.dibujarImagen(this.imagenPep,this.x,this.y,0,1);
     }
 }

@@ -1,6 +1,8 @@
 package juego;
 import java.awt.Color;
 import entorno.Entorno;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class Isla {
 
@@ -9,6 +11,7 @@ public class Isla {
     /***************/ 
     private double x, y; // Posición de la isla en la pantalla
     private double ancho, alto; // Dimensiones de la isla
+    private Image imagenIsla; 
     
 
     /*********************/
@@ -37,9 +40,11 @@ public class Isla {
         this.y = y;
         this.ancho = ancho;
         this.alto = alto;
-    }
-    
 
+        // Cargar la imagen desde el archivo
+        this.imagenIsla = new ImageIcon(getClass().getResource("/juego/imagenes/island.png")).getImage();
+    }   
+    
     /*************/ 
     /** MÉTODOS **/
     /*************/ 
@@ -47,6 +52,10 @@ public class Isla {
     // Dibuja la isla en la pantalla
     public void dibujar(Entorno entorno) {
         entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.GREEN); // Dibuja un rectángulo verde que representa la isla
+
+         // Dibuja la imagen de la isla ajustando el ancho y el alto de la isla
+        entorno.dibujarImagen(this.imagenIsla,this.x,this.y,0,0.52);
+
     }
     
     // Verifica si Pep está dentro de los límites de la isla

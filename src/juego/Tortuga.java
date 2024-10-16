@@ -1,6 +1,9 @@
 package juego;
 import java.awt.Color;
 
+import javax.swing.ImageIcon;
+import java.awt.Image;
+
 import entorno.Entorno;
 
 public class Tortuga {
@@ -13,6 +16,7 @@ public class Tortuga {
     private double velocidadX; // Velocidad de movimiento horizontal
     private double velocidadY; // Velocidad vertical (caída)
     private boolean enElAire; // Indica si la tortuga está cayendo
+    private Image imagenTurtle;
 
     /*********************/
     /**GETTERS Y SETTERS**/
@@ -32,6 +36,9 @@ public class Tortuga {
         this.velocidadX = generarDireccionAleatoria(); // Genera una dirección aleatoria para moverse lateralmente
         this.velocidadY = 0; // Inicialmente no tiene velocidad vertical (no está cayendo)
         this.enElAire = true; // Las tortugas caen inicialmente desde el cielo
+
+        // Cargar la imagen desde el archivo
+        this.imagenTurtle = new ImageIcon(getClass().getResource("/juego/imagenes/turtle.png")).getImage();
     }
 
     /*************/ 
@@ -83,6 +90,9 @@ public class Tortuga {
     // Dibuja la tortuga en pantalla
     public void dibujar(Entorno entorno) {
         entorno.dibujarRectangulo(this.x, this.y, 30, 15, 0, Color.ORANGE); // Dibuja la tortuga como un rectángulo naranja
+
+        // Dibuja la imagen de la tortuga
+        entorno.dibujarImagen(this.imagenTurtle,this.x,this.y,0,1);
     }
 
 }

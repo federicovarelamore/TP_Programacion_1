@@ -1,7 +1,8 @@
 package juego;
 import entorno.Entorno;
-
 import java.awt.Color;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class CasaGnomos {
 
@@ -10,6 +11,7 @@ public class CasaGnomos {
     /***************/ 
 
     private double x, y; // Posición de la casa
+    private Image imagenHouse;
 
     /*************/
     /** GETTERS **/
@@ -25,6 +27,9 @@ public class CasaGnomos {
     public CasaGnomos(double x, double y) {
         this.x = x;
         this.y = y;
+
+        // Cargar la imagen desde el archivo
+        this.imagenHouse = new ImageIcon(getClass().getResource("/juego/imagenes/house.png")).getImage();
     }
 
     /*************/ 
@@ -34,6 +39,9 @@ public class CasaGnomos {
     // Dibuja la casa
     public void dibujar(Entorno entorno) {
         entorno.dibujarRectangulo(this.x, this.y, 50, 30, 0, Color.GRAY); // Representa la casa como un rectángulo
+
+        // Dibuja la imagen de la casa
+        entorno.dibujarImagen(this.imagenHouse,this.x,this.y,0,1);
     }
 
     // Respawnea un gnomo

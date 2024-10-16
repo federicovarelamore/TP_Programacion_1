@@ -3,6 +3,8 @@ import java.awt.Color;
 import entorno.Entorno;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class Gnomo {
 
@@ -13,6 +15,7 @@ public class Gnomo {
     private double velocidadX; // Velocidad de movimiento del gnomo
     private double velocidadY; // Velocidad vertical (caída)
     private boolean enElAire; // Para verificar si el gnomo está cayendo
+    private Image imagenGnomo;
     
    
 
@@ -40,6 +43,9 @@ public class Gnomo {
         this.velocidadX = generarDireccionAleatoria(); // Generar dirección aleatoria
         this.velocidadY = 0;
         this.enElAire = false; // Inicialmente el gnomo está en una isla
+
+        // Cargar la imagen desde el archivo
+        this.imagenGnomo = new ImageIcon(getClass().getResource("/juego/imagenes/gnome.png")).getImage();
     }
 
     /*************/ 
@@ -86,7 +92,10 @@ public class Gnomo {
 
     // Dibuja el gnomo en pantalla
     public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(this.x, this.y, 20, 20, 0, Color.BLUE);
+        entorno.dibujarRectangulo(this.x, this.y, 20, 20, 0, Color.WHITE);
+
+         // Dibuja la imagen del gnomo
+         entorno.dibujarImagen(this.imagenGnomo,this.x,this.y,0,0.20);
     }
 
     
