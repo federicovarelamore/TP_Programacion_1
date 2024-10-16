@@ -1,6 +1,5 @@
 package juego;
 import java.awt.Color;
-
 import javax.swing.ImageIcon;
 import java.awt.Image;
 

@@ -131,7 +131,7 @@ public class Pep {
 
     // Dibuja a Pep en la pantalla
     public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(this.x, this.y, 30, 50, 0, java.awt.Color.white); // Dibuja un rectángulo que representa a Pep
+        entorno.dibujarRectangulo(this.x, this.y, 10, 50, 0, java.awt.Color.white); // Dibuja un rectángulo que representa a Pep
 
         // Dibuja la imagen de Pep
         entorno.dibujarImagen(this.imagenPep,this.x,this.y,0,1);

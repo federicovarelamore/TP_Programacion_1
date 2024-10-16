@@ -2,7 +2,6 @@ package juego;
 import java.awt.Color;
 import entorno.Entorno;
 import java.util.Random;
-
 import javax.swing.ImageIcon;
 import java.awt.Image;
 
@@ -92,7 +91,7 @@ public class Gnomo {
 
     // Dibuja el gnomo en pantalla
     public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(this.x, this.y, 20, 20, 0, Color.WHITE);
+        entorno.dibujarRectangulo(this.x, this.y, 10, 30, 0, Color.WHITE);
 
          // Dibuja la imagen del gnomo
          entorno.dibujarImagen(this.imagenGnomo,this.x,this.y,0,0.20);
