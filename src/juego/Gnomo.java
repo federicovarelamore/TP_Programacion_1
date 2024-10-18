@@ -11,6 +11,7 @@ public class Gnomo {
     /** VARIABLES **/
     /***************/ 
     private double x, y; // Posición del gnomo
+    private double alto, ancho;
     private double velocidadX; // Velocidad de movimiento del gnomo
     private double velocidadY; // Velocidad vertical (caída)
     private boolean enElAire; // Para verificar si el gnomo está cayendo
@@ -21,6 +22,14 @@ public class Gnomo {
     /*********************/
     /**GETTERS Y SETTERS**/
     /*********************/
+    public double getAlto() {
+        return alto;
+    }
+
+    public double getAncho() {
+        return ancho;
+    }
+
     public double getX() {
         return x;
     }
@@ -29,6 +38,27 @@ public class Gnomo {
         return y;
     }
 
+    // Setter para la posición X del gnomo
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    // Setter para la posición Y del gnomo
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    // Setter para la velocidad en el eje X
+    public void setVelocidadX(double velocidadX) {
+        this.velocidadX = velocidadX;
+    }
+
+    // Setter para la velocidad en el eje Y (caída)
+    public void setVelocidadY(double velocidadY) {
+        this.velocidadY = velocidadY;
+    }
+
+    // Setter para determinar si el gnomo está en el aire o no
     public void setEnElAire(boolean enElAire) {
         this.enElAire = enElAire;
     }
@@ -86,7 +116,10 @@ public class Gnomo {
 
     // Verificar si el gnomo aterrizó sobre una isla
     public boolean aterrizoSobreIsla(Isla isla) {
-        return (this.y >= isla.getY() - isla.getAlto() / 2 && this.y <= isla.getY() + isla.getAlto() / 2);
+        return this.y >= (isla.getY() - isla.getAlto() / 2) && 
+            this.y <= (isla.getY() + isla.getAlto() / 2) &&
+            this.x >= (isla.getX() - isla.getAncho() / 2) &&
+            this.x <= (isla.getX() + isla.getAncho() / 2);
     }
 
     // Dibuja el gnomo en pantalla

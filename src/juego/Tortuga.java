@@ -14,7 +14,7 @@ public class Tortuga {
     private double x, y; // Posición de la tortuga
     private double velocidadX; // Velocidad de movimiento horizontal
     private double velocidadY; // Velocidad vertical (caída)
-    private boolean enElAire; // Indica si la tortuga está cayendo
+    private boolean enElAire = true; // Indica si la tortuga está cayendo
     private Image imagenTurtle;
 
     /*********************/
@@ -24,6 +24,7 @@ public class Tortuga {
     public double getX() { return x; }
     public double getY() { return y; }
     public void setEnElAire(boolean enElAire) { this.enElAire = enElAire; }
+    public boolean getEnElAire( ) { return enElAire; }
 
     /*************/
     /*CONSTRUCTOR*/
@@ -63,7 +64,7 @@ public class Tortuga {
         this.x += velocidadX;
     
         // Si la tortuga llega al borde de la isla, cambia de dirección
-        if (this.x <= isla.getX() - isla.getAncho() / 2 || this.x >= isla.getX() + isla.getAncho() / 2) {
+        if (this.x <= isla.getX() - isla.getAncho() / 2 + 5 || this.x >= isla.getX() + isla.getAncho() / 2 - 5) {
             this.velocidadX = -this.velocidadX; // Cambia de dirección al llegar al borde de la isla
         }
     }
@@ -82,9 +83,14 @@ public class Tortuga {
     }
 
     // Verifica si la tortuga aterrizó sobre una isla
+    // Verifica si la tortuga aterrizó sobre una isla
     public boolean aterrizoSobreIsla(Isla isla) {
-        return (this.y >= isla.getY() - isla.getAlto() / 2 && this.y <= isla.getY() + isla.getAlto() / 2);
+    // Verificar si la tortuga está en el rango horizontal y vertical de la isla
+        return (this.y + this.velocidadY >= isla.getY() - isla.getAlto() / 2) &&
+            (this.x >= isla.getX() - isla.getAncho() / 2) &&
+            (this.x <= isla.getX() + isla.getAncho() / 2);
     }
+
 
     // Dibuja la tortuga en pantalla
     public void dibujar(Entorno entorno) {
