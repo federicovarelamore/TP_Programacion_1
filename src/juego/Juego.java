@@ -23,7 +23,6 @@ public class Juego extends InterfaceJuego
     private ArrayList<Isla> islas; // Lista de islas
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
-	private int gnomosRescatados;
 	
 	Juego()
 	{
@@ -43,6 +42,7 @@ public class Juego extends InterfaceJuego
     this.gnomos = new ArrayList<>();
     this.tortugas = new ArrayList<>();
     this.islas = new ArrayList<>();
+
     // Crear algunas islas
     crearIslas();
 
@@ -207,7 +207,6 @@ private void actualizarPep() {
 
         casaGnomos.dibujar(entorno); // Dibujar la CasaGnomos
     }
-    
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -310,6 +309,7 @@ private void actualizarPep() {
             }
         }
         
+        
          // Respawn gnomos de la casa
          if (Math.random() < 0.01) { // 1% de probabilidad de respawnear un gnomo en cada tick
             gnomos.add(casaGnomos.respawnearGnomo());
@@ -319,7 +319,6 @@ private void actualizarPep() {
         if (Math.random() < 0.02 && tortugas.size() <= 10) { // 2% de probabilidad de respawnear una tortuga en cada tick
             respawnearTortuga();
         }
-        
 
 		 // Dibujar todos los objetos en pantalla
 		 dibujarObjetos();
