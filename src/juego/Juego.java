@@ -23,6 +23,12 @@ public class Juego extends InterfaceJuego
     private ArrayList<Isla> islas; // Lista de islas
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
+    
+    private int gnomosRescatados;
+    private int gnomosPerdidos;
+    private int enemigosEliminados;
+    private long tiempoInicio;
+
 	
 	Juego()
 	{
@@ -42,6 +48,10 @@ public class Juego extends InterfaceJuego
     this.gnomos = new ArrayList<>();
     this.tortugas = new ArrayList<>();
     this.islas = new ArrayList<>();
+    this.gnomosRescatados = 0;
+    this.gnomosPerdidos = 0;
+    this.enemigosEliminados = 0;
+    this.tiempoInicio = System.currentTimeMillis();
 
     // Crear algunas islas
     crearIslas();
@@ -207,6 +217,37 @@ private void actualizarPep() {
 
         casaGnomos.dibujar(entorno); // Dibujar la CasaGnomos
     }
+    
+    
+    private void mostrarEstadisticas() {
+        // Calcular el tiempo transcurrido en milisegundos
+        long tiempoActual = System.currentTimeMillis();
+        long tiempoTranscurridoMillis = tiempoActual - tiempoInicio;
+        
+        // Convertir el tiempo transcurrido a horas, minutos y segundos
+        long segundos = (tiempoTranscurridoMillis / 1000) % 60;
+        long minutos = (tiempoTranscurridoMillis / (1000 * 60)) % 60;
+        long horas = (tiempoTranscurridoMillis / (1000 * 60 * 60)) % 24;
+
+        // Formatear el tiempo en hh:mm:ss
+        String tiempoFormato = String.format("%02d:%02d:%02d", horas, minutos, segundos);
+
+        // Cambiar la fuente y el color si es necesario
+        entorno.cambiarFont("Arial", 18, Color.BLACK);
+
+        // Mostrar el tiempo en formato de reloj
+        entorno.escribirTexto("Tiempo: " + tiempoFormato, 10, 20);
+
+        // Mostrar la cantidad de gnomos rescatados
+        entorno.escribirTexto("Gnomos rescatados: " + gnomosRescatados, 200, 20);
+
+        // Mostrar la cantidad de gnomos perdidos
+        entorno.escribirTexto("Gnomos perdidos: " + gnomosPerdidos, 400, 20);
+
+        // Mostrar la cantidad de enemigos eliminados
+        entorno.escribirTexto("Enemigos eliminados: " + enemigosEliminados, 600, 20);
+    }
+
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -314,6 +355,8 @@ private void actualizarPep() {
          if (Math.random() < 0.01) { // 1% de probabilidad de respawnear un gnomo en cada tick
             gnomos.add(casaGnomos.respawnearGnomo());
         }
+      // Mostrar las estadísticas en pantalla
+         mostrarEstadisticas();  // <- Aquí se llama el método
 
         // Respawn tortugas
         if (Math.random() < 0.02 && tortugas.size() <= 10) { // 2% de probabilidad de respawnear una tortuga en cada tick
