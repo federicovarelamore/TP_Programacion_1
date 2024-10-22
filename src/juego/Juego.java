@@ -23,6 +23,7 @@ public class Juego extends InterfaceJuego
     private ArrayList<Isla> islas; // Lista de islas
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
+    private Sonidos sonido;
 	
 	Juego()
 	{
@@ -33,6 +34,10 @@ public class Juego extends InterfaceJuego
     this.imagenBackground = new ImageIcon(getClass().getResource("/juego/imagenes/background.png")).getImage();
 
     // Inicializar lo que haga falta para el juego
+    
+    //inicializar el reproductor de audio
+    sonido = new Sonidos("src/audio/disparo.wav");
+    //sonido.play();
 
     /*************/ 
     /** OBJETOS **/
@@ -327,7 +332,9 @@ private void actualizarPep() {
          // Lógica para disparar bolas de fuego con la tecla 'c'
 
     if (entorno.sePresiono('c')) {
-        pep.disparar();
+    	//sonido.play();
+    	pep.disparar();
+       
     }
 
       // Actualizar y dibujar las bolas de fuego
