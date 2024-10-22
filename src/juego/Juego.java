@@ -23,13 +23,14 @@ public class Juego extends InterfaceJuego
     private ArrayList<Isla> islas; // Lista de islas
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
+	private int gnomosRescatados;
 	
 	Juego()
 	{
     // Inicializa el objeto entorno
     this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
     
-    // Cargar la imagen desde el archivo
+    // Cargar la imagen desde el archivo antes que nada
     this.imagenBackground = new ImageIcon(getClass().getResource("/juego/imagenes/background.png")).getImage();
 
     // Inicializar lo que haga falta para el juego
@@ -38,11 +39,10 @@ public class Juego extends InterfaceJuego
     /** OBJETOS **/
     /*************/ 
 
-    this.pep = new Pep(400, 550); // Posición inicial de Pep
+    this.pep = new Pep(400, 550); 
     this.gnomos = new ArrayList<>();
     this.tortugas = new ArrayList<>();
     this.islas = new ArrayList<>();
-
     // Crear algunas islas
     crearIslas();
 
@@ -55,11 +55,6 @@ public class Juego extends InterfaceJuego
     // Crear gnomos iniciales
     for (int i = 0; i < 5; i++) {
         gnomos.add(new Gnomo(200 + (i * 100), 400)); // Posiciones iniciales de los gnomos
-    }
-
-     // Crear algunas tortugas iniciales
-     for (int i = 0; i < 3; i++) {
-        tortugas.add(new Tortuga(150 + (i * 200), 100)); // Posiciones iniciales
     }
 
     // Inicia el juego!
@@ -122,48 +117,34 @@ private void crearIslas() {
     }
 
     // Obtener la isla superior (única en la cima)
-    Isla islaSuperior = islas.get(islas.size() - 1); // Última isla agregada (la única en la cima)
+    Isla islaSuperior = islas.get(islas.size() - 1); // Última isla agregada
 
     // Crear la casa de los Gnomos centrada en la isla superior
-    casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusta el -30 según el tamaño de la casa
+    casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusto el -30 según el tamaño de la casa
 }
 
 
 private void respawnearTortuga() {
-    // // Generar un número aleatorio de isla (evitamos la primera fila, donde está la casa de los gnomos)
-    // int indiceIsla = (int) (Math.random() * (islas.size() - 5)) + 5; // Evitar las primeras 5 islas
-    // Isla islaSeleccionada = islas.get(indiceIsla);
     
-    // // Calcula una posición X aleatoria dentro de la mitad del ancho de la isla seleccionada.
-    // // la tortuga aparece en una posición aleatoria en la isla, pero dentro del rango delimitado
-    // // centrado en el medio de la isla (restando un cuarto del ancho para limitar la dispersión)
-    // double posicionX = islaSeleccionada.getX() + (Math.random() * islaSeleccionada.getAncho() / 2) - islaSeleccionada.getAncho() / 4;
-    
-    // // Crea una nueva Tortuga en la posición X calculada y en la posición Y
-    // // justo encima de la isla (altura de la isla dividida entre 2, para que la tortuga aparezca sobre la isla).
-    // tortugas.add(new Tortuga(posicionX, islaSeleccionada.getY() - islaSeleccionada.getAlto() / 2));
-     // Evitar las primeras 2 filas de islas
-     
-     // Valores predeterminados del ancho y alto de la tortuga (cámbialos por los correctos)
     int tortugaAncho = 50;  // Ajusta este valor al ancho real de la tortuga
     int tortugaAlto = 50;   // Ajusta este valor al alto real de la tortuga
+    Isla islaSeleccionada = null;
+    double posicionX = 0;
+    int indiceRandom = 0;
 
-    // Crear tortugas solo en las filas 3, 4 y 5 (índices 2, 3 y 4 en tu array de islas)
-    for (int i = 2; i < islas.size(); i++) {  // Comienza desde el índice 2 (tercera fila)
-        Isla islaSeleccionada = islas.get(i);
+    // Crear tortugas solo en las filas 3, 4 y 5 (índices 0, 1 y 2 en el array de islas)
+    // Comienza desde el índice 2 (tercera fila)
+    indiceRandom = (int)(Math.random() * ((2 - 0) + 1));
+    islaSeleccionada = islas.get(indiceRandom);
 
-        // Calcula una posición aleatoria dentro de la isla seleccionada
-        double posicionX = islaSeleccionada.getX() + Math.random() * (islaSeleccionada.getAncho() - tortugaAncho);
+    // Calcula una posición aleatoria dentro de la isla seleccionada
+    posicionX = islaSeleccionada.getX() + Math.random() * (islaSeleccionada.getAncho() - tortugaAncho);
 
-        // Crear la tortuga y agregarla a la lista, ajustando su posición en Y según el alto de la tortuga
-        Tortuga nuevaTortuga = new Tortuga(posicionX, islaSeleccionada.getY() - tortugaAlto);
-        tortugas.add(nuevaTortuga);
-    }
-
-    
-    
-    
+    // Crear la tortuga y agregarla a la lista, ajustando su posición en Y según el alto de la tortuga
+    Tortuga nuevaTortuga = new Tortuga(posicionX, 100);
+    tortugas.add(nuevaTortuga);
 }
+    
 
 // Actualiza la posición de Pep
 private void actualizarPep() {
@@ -226,6 +207,7 @@ private void actualizarPep() {
 
         casaGnomos.dibujar(entorno); // Dibujar la CasaGnomos
     }
+    
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -242,7 +224,7 @@ private void actualizarPep() {
 		// Procesamiento de un instante de tiempo
 		actualizarPep();
 		
-		 // Actualizar la posición de los gnomos
+		 //Actualizar la posición de los gnomos
 		 for (Gnomo gnomo : gnomos) {
             gnomo.moverLateral();
             gnomo.caer(); // Caer si está en el aire
@@ -259,10 +241,65 @@ private void actualizarPep() {
             }
         }
 
+        ///////////////////////////////////////
+        // Actualizar la posición de los gnomos
+        // for (Gnomo gnomo : gnomos) {
+        //     gnomo.moverLateral(); // Movimiento lateral
+        //     boolean enElAire = true; // Asumimos que está en el aire al inicio del ciclo
+
+        //     // Verificar si el gnomo ha aterrizado sobre alguna isla
+        //     for (Isla isla : islas) {
+        //         if (gnomo.aterrizoSobreIsla(isla)) {
+        //             gnomo.setEnElAire(false); // Detenemos su caída
+        //             gnomo.cambiarDireccion(); // Cambiamos dirección al aterrizar
+        //             enElAire = false; // El gnomo está sobre una isla
+        //             gnomo.setY(isla.getY() - 20); // Alineamos su posición sobre la isla
+        //             break; // Detenemos el ciclo ya que ha aterrizado
+        //         }
+        //     }
+
+        //     // Si no está sobre ninguna isla, sigue cayendo
+        //     if (enElAire) {
+        //         gnomo.setEnElAire(true); // El gnomo está en el aire
+        //         gnomo.caer(); // Actualizamos su posición vertical
+        //     }
+        // }
+        //////////////////////////////////////////////////////
+
+        // for (Gnomo gnomo : gnomos) {
+        //     gnomo.moverLateral();
+        //     boolean enElAire = true;
+        
+        //     for (Isla isla : islas) {
+        //         // Verifica si el gnomo está sobre la isla
+        //         if (gnomo.getY() + gnomo.getAlto() >= isla.getY() && gnomo.getY() <= isla.getY() + isla.getAlto()) {
+        //             // Verificar si el gnomo está horizontalmente sobre la isla
+        //             if (gnomo.getX() + gnomo.getAncho() / 2 >= isla.getX() - isla.getAncho() / 2 && 
+        //                 gnomo.getX() - gnomo.getAncho() / 2 <= isla.getX() + isla.getAncho() / 2) {
+        //                 gnomo.setEnElAire(false);
+        //                 gnomo.cambiarDireccion();
+        //                 enElAire = false;
+        
+        //                 // Alinea el gnomo sobre la isla
+        //                 gnomo.setY(isla.getY() - gnomo.getAlto()); // Coloca el gnomo justo encima de la isla
+        //                 break; // Salir del bucle de islas ya que se ha encontrado una colisión
+        //             }
+        //         }
+        //     }
+        
+        //     // Si no está sobre ninguna isla, sigue cayendo
+        //     if (enElAire) {
+        //         gnomo.setEnElAire(true);
+        //         gnomo.caer(); // Lógica para hacer que el gnomo caiga
+        //     }
+        // }
+
 		// Actualizar la posición de las tortugas
          for (Tortuga tortuga : tortugas) {
-
-            tortuga.caer(); // Caer si está en el aire
+            
+            if (tortuga.getEnElAire()) {
+                tortuga.caer(); // Hacer que la tortuga caiga si está en el aire
+            }
 
             for (Isla isla : islas) {
                 if (tortuga.aterrizoSobreIsla(isla)) {// Verificar si la tortuga aterriza sobre una isla
@@ -273,19 +310,29 @@ private void actualizarPep() {
             }
         }
         
-        
          // Respawn gnomos de la casa
          if (Math.random() < 0.01) { // 1% de probabilidad de respawnear un gnomo en cada tick
             gnomos.add(casaGnomos.respawnearGnomo());
         }
 
         // Respawn tortugas
-        if (Math.random() < 0.02) { // 2% de probabilidad de respawnear una tortuga en cada tick
+        if (Math.random() < 0.02 && tortugas.size() <= 10) { // 2% de probabilidad de respawnear una tortuga en cada tick
             respawnearTortuga();
         }
+        
 
 		 // Dibujar todos los objetos en pantalla
 		 dibujarObjetos();
+
+
+         // Lógica para disparar bolas de fuego con la tecla 'c'
+
+    if (entorno.sePresiono('c')) {
+        pep.disparar();
+    }
+
+      // Actualizar y dibujar las bolas de fuego
+    pep.actualizarBolasDeFuego(entorno);
 
 	} // Cierre Tick
 	

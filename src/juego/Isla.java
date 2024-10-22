@@ -49,6 +49,19 @@ public class Isla {
     /** MÉTODOS **/
     /*************/ 
 
+    // Verifica si Pep está dentro de los límites de la isla
+    public boolean estaSobreLaIsla(Pep pep) {
+        // Limite izquierdo y derecho (X)
+    boolean dentroDelLimiteX = pep.getX() > this.x && pep.getX() < this.x + this.ancho;
+
+    // Limite superior (Y), verifica si Pep está justo por encima de la isla
+    boolean dentroDelLimiteY = pep.getY() + pep.getAlto() >= this.y && pep.getY() + pep.getAncho() <= this.y + this.alto;
+
+    // Devuelve true si está dentro de los límites
+    return dentroDelLimiteX && dentroDelLimiteY;
+    }
+
+
     // Dibuja la isla en la pantalla
     public void dibujar(Entorno entorno) {
         entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.GREEN); // Dibuja un rectángulo verde que representa la isla
@@ -58,12 +71,7 @@ public class Isla {
 
     }
     
-    // Verifica si Pep está dentro de los límites de la isla
-    public boolean estaSobreLaIsla(Pep pep) {
-        boolean dentroDelLimiteX = pep.getX() > this.x - this.ancho / 2 && pep.getX() < this.x + this.ancho / 2; // Verifica si Pep está dentro de los límites horizontales
-        boolean dentroDelLimiteY = pep.getY() >= this.y - this.alto / 2; // Verifica si Pep está por encima del borde inferior de la isla
-        return dentroDelLimiteX && dentroDelLimiteY; // Retorna verdadero si Pep está sobre la isla
-    }
+   
     
 
 }
