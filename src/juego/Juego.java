@@ -24,6 +24,12 @@ public class Juego extends InterfaceJuego
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
     private Sonidos sonido;
+    private int gnomosRescatados;
+    private int gnomosPerdidos;
+    private int enemigosEliminados;
+    private long tiempoInicio;
+
+
 	
 	Juego()
 	{
@@ -37,7 +43,7 @@ public class Juego extends InterfaceJuego
     
     //inicializar el reproductor de audio
     sonido = new Sonidos("src/audio/disparo.wav");
-    //sonido.play();
+    
 
     /*************/ 
     /** OBJETOS **/
@@ -47,6 +53,10 @@ public class Juego extends InterfaceJuego
     this.gnomos = new ArrayList<>();
     this.tortugas = new ArrayList<>();
     this.islas = new ArrayList<>();
+    this.gnomosRescatados = 0;
+    this.gnomosPerdidos = 0;
+    this.enemigosEliminados = 0;
+    this.tiempoInicio = System.currentTimeMillis();
 
     // Crear algunas islas
     crearIslas();
@@ -127,6 +137,38 @@ private void crearIslas() {
     // Crear la casa de los Gnomos centrada en la isla superior
     casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusto el -30 según el tamaño de la casa
 }
+
+public boolean colisiona(Pep pep, Gnomo gnomos) {
+	//coordenadas y dimensiones de pep
+	double pepIzquierda = pep.getX();
+	double pepDerecha = pep.getX() + pep.getAlto();
+	double pepSuperior = pep.getY();
+	double pepInferior = pep.getY() + pep.getAlto();
+	
+	//coordenadas y dimensiones de gnomo
+	double gnomoIzquierda = gnomos.getX();
+	double gnomoDerecha = gnomos.getX() + gnomos.getAlto();
+	double gnomoSuperior = gnomos.getY();
+	double gnomoInferior = gnomos.getY() + gnomos.getAlto();
+	
+	//verificar superposicion en el eje x
+	boolean colisionX = pepDerecha > gnomoIzquierda && pepIzquierda < gnomoDerecha;
+	
+	//verificar superposicion en el eje y
+	boolean colisionY = pepInferior > gnomoSuperior && pepSuperior < gnomoInferior;
+	
+	//hay colision si se superponen en ambas ejes
+	return colisionX && colisionY;
+	
+}
+
+public void rescatarGnomo(Gnomo gnomo) {
+	//logica para rescatar al gnomo
+	gnomosRescatados++;
+	gnomos.remove(gnomo); // Eliminar gnomo del juego
+	//System.out.println("gnomo rescatado!");
+}
+
 
 
 private void respawnearTortuga() {
@@ -212,6 +254,37 @@ private void actualizarPep() {
 
         casaGnomos.dibujar(entorno); // Dibujar la CasaGnomos
     }
+    
+    
+    private void mostrarEstadisticas() {
+        // Calcular el tiempo transcurrido en milisegundos
+        long tiempoActual = System.currentTimeMillis();
+        long tiempoTranscurridoMillis = tiempoActual - tiempoInicio;
+        
+        // Convertir el tiempo transcurrido a horas, minutos y segundos
+        long segundos = (tiempoTranscurridoMillis / 1000) % 60;
+        long minutos = (tiempoTranscurridoMillis / (1000 * 60)) % 60;
+        long horas = (tiempoTranscurridoMillis / (1000 * 60 * 60)) % 24;
+
+        // Formatear el tiempo en hh:mm:ss
+        String tiempoFormato = String.format("%02d:%02d:%02d", horas, minutos, segundos);
+
+        // Cambiar la fuente y el color si es necesario
+        entorno.cambiarFont("Arial", 18, Color.BLACK);
+
+        // Mostrar el tiempo en formato de reloj
+        entorno.escribirTexto("Tiempo: " + tiempoFormato, 10, 20);
+
+        // Mostrar la cantidad de gnomos rescatados
+        entorno.escribirTexto("Gnomos rescatados: " + gnomosRescatados, 200, 20);
+
+        // Mostrar la cantidad de gnomos perdidos
+        entorno.escribirTexto("Gnomos perdidos: " + gnomosPerdidos, 400, 20);
+
+        // Mostrar la cantidad de enemigos eliminados
+        entorno.escribirTexto("Enemigos eliminados: " + enemigosEliminados, 600, 20);
+    }
+
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -221,7 +294,17 @@ private void actualizarPep() {
 	 */
 	public void tick()
 	{
-        // Dibujar el fondo antes de todo lo demás
+		//Iterar sobre todos los gnomos en el juego
+		for(Gnomo gnomo : gnomos) { //error aca 
+			// Verificar si Pep colisiona con el gnom
+			if(colisiona(pep,gnomo)) {
+				 // Acción en caso de colisión, por ejemplo, rescatar al gnomo
+				rescatarGnomo(gnomo); 
+			}
+			
+		}
+		
+		// Dibujar el fondo antes de todo lo demás
         entorno.dibujarImagen(this.imagenBackground, entorno.ancho() / 2, entorno.alto() / 2, 0, 1);
 
 
@@ -319,6 +402,8 @@ private void actualizarPep() {
          if (Math.random() < 0.01) { // 1% de probabilidad de respawnear un gnomo en cada tick
             gnomos.add(casaGnomos.respawnearGnomo());
         }
+      // Mostrar las estadísticas en pantalla
+         mostrarEstadisticas();  // <- Aquí se llama el método
 
         // Respawn tortugas
         if (Math.random() < 0.02 && tortugas.size() <= 10) { // 2% de probabilidad de respawnear una tortuga en cada tick
@@ -329,13 +414,13 @@ private void actualizarPep() {
 		 dibujarObjetos();
 
 
-         // Lógica para disparar bolas de fuego con la tecla 'c'
+    // Lógica para disparar bolas de fuego con la tecla 'c'
 
     if (entorno.sePresiono('c')) {
-    	//sonido.play();
     	pep.disparar();
-       
+    	sonido.play();
     }
+   
 
       // Actualizar y dibujar las bolas de fuego
     pep.actualizarBolasDeFuego(entorno);

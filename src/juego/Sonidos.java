@@ -29,7 +29,9 @@ public class Sonidos {
 	public void play() {
 		if (clip != null) {
 			clip.start();
-			clip.loop(clip.LOOP_CONTINUOUSLY);     // Para que la música se repita indefinidamente
+			clip.setFramePosition(0);  //reinicia la posicion del sonido al principio.
+			//clip.loop(clip.LOOP_CONTINUOUSLY);  // Para que la música se repita indefinidamente
+			
 		}
 	}
 	
