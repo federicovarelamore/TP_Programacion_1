@@ -2,6 +2,8 @@ package juego;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 import javax.swing.ImageIcon;
@@ -18,36 +20,18 @@ public class Juego extends InterfaceJuego {
 	/***************/
 
 	private Pep pep; // El personaje principal
-<<<<<<< HEAD
-	private ArrayList<Gnomo> gnomos; // Lista de gnomos
-	private ArrayList<Tortuga> tortugas; // Lista de tortugas
-	private ArrayList<Isla> islas; // Lista de islas
-	private CasaGnomos casaGnomos; // Instancia de CasaGnomo
-	private Image imagenBackground;
-
-	private int gnomosRescatados;
-	private int gnomosPerdidos;
-	private int enemigosEliminados;
-	private long tiempoInicio;
-	private boolean juegoterminado;
-
-	Juego() {
-		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Proyecto para TP", 800, 600);
-=======
     private ArrayList<Gnomo> gnomos; // Lista de gnomos
     private ArrayList<Tortuga> tortugas; // Lista de tortugas
     private ArrayList<Isla> islas; // Lista de islas
     private CasaGnomos casaGnomos; // Instancia de CasaGnomo
     private Image imagenBackground;
-    private Sonidos sonido;
+    private Sonidos disparo;
     private int gnomosRescatados;
     private int gnomosPerdidos;
     private int enemigosEliminados;
     private long tiempoInicio;
+	private boolean  juegoterminado;
 
-
-	
 	Juego()
 	{
     // Inicializa el objeto entorno
@@ -59,9 +43,8 @@ public class Juego extends InterfaceJuego {
     // Inicializar lo que haga falta para el juego
     
     //inicializar el reproductor de audio
-    sonido = new Sonidos("src/audio/disparo.wav");
+    disparo = new Sonidos("ProyectoLimpio\\TP_Programacion_1\\bin\\audio\\disparo.wav");
     
->>>>>>> c32c0dd5f36fe81740b3b11be0ee933a3ef33afb
 
 		// Cargar la imagen desde el archivo antes que nada
 		this.imagenBackground = new ImageIcon(getClass().getResource("/juego/imagenes/background.png")).getImage();
@@ -88,14 +71,8 @@ public class Juego extends InterfaceJuego {
 		Isla islaSuperior = islas.get(islas.size() - 1); // Última isla agregada (la única en la cima)
 
 		// Crear la casa de los Gnomos
-		casaGnomos = new CasaGnomos(islaSuperior.getX() - 45 + (islaSuperior.getAncho() / 2), islaSuperior.getY() - 40); // Ubicación
-																															// de
-																															// la
-																															// casa
-																															// en
-																															// la
-																															// parte
-																															// superior
+		casaGnomos = new CasaGnomos(islaSuperior.getX() - 45 + (islaSuperior.getAncho() / 2), islaSuperior.getY() - 40); // Ubicación de la casa en la parte superior
+
 
 		// Crear gnomos iniciales
 		for (int i = 0; i < 5; i++) {
@@ -166,48 +143,36 @@ public class Juego extends InterfaceJuego {
 		Isla islaSuperior = islas.get(islas.size() - 1); // Última isla agregada
 
 		// Crear la casa de los Gnomos centrada en la isla superior
-		casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusto el -30
-																										// según el
-																										// tamaño de la
-																										// casa
+		casaGnomos = new CasaGnomos(islaSuperior.getX() + (anchoIsla / 2), islaSuperior.getY() - 30); // Ajusto el -30 segun el tamaño de la casa
 	}
 
-<<<<<<< HEAD
 	private void respawnearTortuga() {
-=======
-public boolean colisiona(Pep pep, Gnomo gnomos) {
-	//coordenadas y dimensiones de pep
-	double pepIzquierda = pep.getX();
-	double pepDerecha = pep.getX() + pep.getAlto();
-	double pepSuperior = pep.getY();
-	double pepInferior = pep.getY() + pep.getAlto();
-	
-	//coordenadas y dimensiones de gnomo
-	double gnomoIzquierda = gnomos.getX();
-	double gnomoDerecha = gnomos.getX() + gnomos.getAlto();
-	double gnomoSuperior = gnomos.getY();
-	double gnomoInferior = gnomos.getY() + gnomos.getAlto();
-	
-	//verificar superposicion en el eje x
-	boolean colisionX = pepDerecha > gnomoIzquierda && pepIzquierda < gnomoDerecha;
-	
-	//verificar superposicion en el eje y
-	boolean colisionY = pepInferior > gnomoSuperior && pepSuperior < gnomoInferior;
-	
-	//hay colision si se superponen en ambas ejes
-	return colisionX && colisionY;
-	
-}
+		int tortugaAncho = 50;  // Ajusta este valor al ancho real de la tortuga
+		int tortugaAlto = 50;   // Ajusta este valor al alto real de la tortuga
+		Isla islaSeleccionada = null;
+		double posicionX = 0;
+		int indiceRandom = 0;
+
+		 // Crear tortugas solo en las filas 3, 4 y 5 (índices 0, 1 y 2 en el array de islas)
+		// Comienza desde el índice 2 (tercera fila)
+		indiceRandom = (int)(Math.random() * ((2 - 0) + 1));
+		islaSeleccionada = islas.get(indiceRandom);
+
+		 // Calcula una posición aleatoria dentro de la isla seleccionada
+		 posicionX = islaSeleccionada.getX() + Math.random() * (islaSeleccionada.getAncho() - tortugaAncho);
+
+		 // Crear la tortuga y agregarla a la lista, ajustando su posición en Y según el alto de la tortuga
+		 Tortuga nuevaTortuga = new Tortuga(posicionX, 100);
+		 tortugas.add(nuevaTortuga);
+	}
+
 
 public void rescatarGnomo(Gnomo gnomo) {
 	//logica para rescatar al gnomo
 	gnomosRescatados++;
 	gnomos.remove(gnomo); // Eliminar gnomo del juego
 	//System.out.println("gnomo rescatado!");
-}
 
-
->>>>>>> c32c0dd5f36fe81740b3b11be0ee933a3ef33afb
 
 		int tortugaAncho = 50; // Ajusta este valor al ancho real de la tortuga
 		int tortugaAlto = 50; // Ajusta este valor al alto real de la tortuga
@@ -358,39 +323,58 @@ public void rescatarGnomo(Gnomo gnomo) {
 		}
 	}
 
+
+	public boolean colisiona(Pep pep, Gnomo gnomos) {
+		//coordenadas y dimensiones de pep
+		double pepIzquierda = pep.getX();
+		double pepDerecha = pep.getX() + pep.getAlto();
+		double pepSuperior = pep.getY();
+		double pepInferior = pep.getY() + pep.getAlto();
+		
+		//coordenadas y dimensiones de gnomo
+		double gnomoIzquierda = gnomos.getX();
+		double gnomoDerecha = gnomos.getX() + gnomos.getAlto();
+		double gnomoSuperior = gnomos.getY();
+		double gnomoInferior = gnomos.getY() + gnomos.getAlto();
+		
+		//verificar superposicion en el eje x
+		boolean colisionX = pepDerecha > gnomoIzquierda && pepIzquierda < gnomoDerecha;
+		
+		//verificar superposicion en el eje y
+		boolean colisionY = pepInferior > gnomoSuperior && pepSuperior < gnomoInferior;
+		
+		//hay colision si se superponen en ambas ejes
+		return colisionX && colisionY;
+		
+	}
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y por lo
 	 * tanto es el método más importante de esta clase. Aquí se debe actualizar el
 	 * estado interno del juego para simular el paso del tiempo (ver el enunciado
 	 * del TP para mayor detalle).
 	 */
-<<<<<<< HEAD
-	public void tick() {
-		verificarFinDeJuego();
-=======
-	public void tick()
-	{
-		//Iterar sobre todos los gnomos en el juego
-		for(Gnomo gnomo : gnomos) { //error aca 
-			// Verificar si Pep colisiona con el gnom
-			if(colisiona(pep,gnomo)) {
-				 // Acción en caso de colisión, por ejemplo, rescatar al gnomo
-				rescatarGnomo(gnomo); 
-			}
-			
+
+public void tick()
+{
+	verificarFinDeJuego();
+	//Iterar sobre todos los gnomos en el juego
+	Iterator<Gnomo> iterator = gnomos.iterator();
+	while (iterator.hasNext()) {
+		Gnomo gnomo = iterator.next();
+		if (colisiona(pep, gnomo)) {
+			rescatarGnomo(gnomo);
+			iterator.remove(); // Remover gnomo usando el iterador
 		}
+	}
+		
 		
 		// Dibujar el fondo antes de todo lo demás
         entorno.dibujarImagen(this.imagenBackground, entorno.ancho() / 2, entorno.alto() / 2, 0, 1);
->>>>>>> c32c0dd5f36fe81740b3b11be0ee933a3ef33afb
 
 		if (juegoterminado) {
 	        mostrarPantallaGameOver(); // Mostrar la pantalla de Game Over
 	        return; // Detener el resto del ciclo del juego
 	    }
-
-		// Dibujar el fondo antes de todo lo demás
-		entorno.dibujarImagen(this.imagenBackground, entorno.ancho() / 2, entorno.alto() / 2, 0, 1);
 
 		// Procesamiento de un instante de tiempo
 		actualizarPep();
@@ -412,62 +396,6 @@ public void rescatarGnomo(Gnomo gnomo) {
 			}
 		}
 
-		///////////////////////////////////////
-		// Actualizar la posición de los gnomos
-		// for (Gnomo gnomo : gnomos) {
-		// gnomo.moverLateral(); // Movimiento lateral
-		// boolean enElAire = true; // Asumimos que está en el aire al inicio del ciclo
-
-		// // Verificar si el gnomo ha aterrizado sobre alguna isla
-		// for (Isla isla : islas) {
-		// if (gnomo.aterrizoSobreIsla(isla)) {
-		// gnomo.setEnElAire(false); // Detenemos su caída
-		// gnomo.cambiarDireccion(); // Cambiamos dirección al aterrizar
-		// enElAire = false; // El gnomo está sobre una isla
-		// gnomo.setY(isla.getY() - 20); // Alineamos su posición sobre la isla
-		// break; // Detenemos el ciclo ya que ha aterrizado
-		// }
-		// }
-
-		// // Si no está sobre ninguna isla, sigue cayendo
-		// if (enElAire) {
-		// gnomo.setEnElAire(true); // El gnomo está en el aire
-		// gnomo.caer(); // Actualizamos su posición vertical
-		// }
-		// }
-		//////////////////////////////////////////////////////
-
-		// for (Gnomo gnomo : gnomos) {
-		// gnomo.moverLateral();
-		// boolean enElAire = true;
-
-		// for (Isla isla : islas) {
-		// // Verifica si el gnomo está sobre la isla
-		// if (gnomo.getY() + gnomo.getAlto() >= isla.getY() && gnomo.getY() <=
-		// isla.getY() + isla.getAlto()) {
-		// // Verificar si el gnomo está horizontalmente sobre la isla
-		// if (gnomo.getX() + gnomo.getAncho() / 2 >= isla.getX() - isla.getAncho() / 2
-		// &&
-		// gnomo.getX() - gnomo.getAncho() / 2 <= isla.getX() + isla.getAncho() / 2) {
-		// gnomo.setEnElAire(false);
-		// gnomo.cambiarDireccion();
-		// enElAire = false;
-
-		// // Alinea el gnomo sobre la isla
-		// gnomo.setY(isla.getY() - gnomo.getAlto()); // Coloca el gnomo justo encima de
-		// la isla
-		// break; // Salir del bucle de islas ya que se ha encontrado una colisión
-		// }
-		// }
-		// }
-
-		// // Si no está sobre ninguna isla, sigue cayendo
-		// if (enElAire) {
-		// gnomo.setEnElAire(true);
-		// gnomo.caer(); // Lógica para hacer que el gnomo caiga
-		// }
-		// }
-
 		// Actualizar la posición de las tortugas
 		for (Tortuga tortuga : tortugas) {
 
@@ -482,6 +410,9 @@ public void rescatarGnomo(Gnomo gnomo) {
 					break; // Una vez que la tortuga aterriza, no necesita seguir revisando más islas
 				}
 			}
+
+			 // Lógica para que la tortuga dispare veneno
+			 tortuga.dispararVeneno(); 
 		}
 
 		// Respawn gnomos de la casa
@@ -497,29 +428,20 @@ public void rescatarGnomo(Gnomo gnomo) {
 			respawnearTortuga();
 		}
 
-<<<<<<< HEAD
+
 		// Dibujar todos los objetos en pantalla
 		dibujarObjetos();
 
-		// Lógica para disparar bolas de fuego con la tecla 'c'
-=======
     // Lógica para disparar bolas de fuego con la tecla 'c'
-
     if (entorno.sePresiono('c')) {
     	pep.disparar();
-    	sonido.play();
+    	disparo.play();
     }
-   
->>>>>>> c32c0dd5f36fe81740b3b11be0ee933a3ef33afb
-
-		if (entorno.sePresiono('c')) {
-			pep.disparar();
-		}
 
 		// Actualizar y dibujar las bolas de fuego
 		pep.actualizarBolasDeFuego(entorno);
 
-	} // Cierre Tick
+} // Cierre Tick
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {

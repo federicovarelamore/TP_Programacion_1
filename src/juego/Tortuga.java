@@ -16,6 +16,8 @@ public class Tortuga {
     private double velocidadY; // Velocidad vertical (caída)
     private boolean enElAire = true; // Indica si la tortuga está cayendo
     private Image imagenTurtle;
+    private Veneno veneno; // Instancia de Veneno
+    private long ultimoDisparo; // Tiempo del último disparo
 
     /*********************/
     /**GETTERS Y SETTERS**/
@@ -36,6 +38,7 @@ public class Tortuga {
         this.velocidadX = generarDireccionAleatoria(); // Genera una dirección aleatoria para moverse lateralmente
         this.velocidadY = 0; // Inicialmente no tiene velocidad vertical (no está cayendo)
         this.enElAire = true; // Las tortugas caen inicialmente desde el cielo
+        this.ultimoDisparo = System.currentTimeMillis(); // Inicializa el tiempo del último disparo
 
         // Cargar la imagen desde el archivo
         this.imagenTurtle = new ImageIcon(getClass().getResource("/juego/imagenes/turtle.png")).getImage();
@@ -98,6 +101,23 @@ public class Tortuga {
 
         // Dibuja la imagen de la tortuga
         entorno.dibujarImagen(this.imagenTurtle,this.x,this.y,0,1);
+
+        if (veneno != null && veneno.estaActivo()) {
+            veneno.mover(); // Mueve el veneno si está activo
+            veneno.dibujar(entorno); // Dibuja el veneno
+        }
+    }
+    
+    public void dispararVeneno() {
+        long tiempoActual = System.currentTimeMillis(); // Tiempo actual
+        int intervaloAleatorio = (int)(Math.random() * 3000) + 2000; // Intervalo entre 2 y 5 segundos
+
+        // Verifica si es tiempo de disparar y si no hay veneno activo
+        if (tiempoActual - ultimoDisparo >= intervaloAleatorio && (veneno == null || !veneno.estaActivo())) {
+            int direccion = (velocidadX > 0) ? 1 : -1; // Determina la dirección del veneno
+            veneno = new Veneno(x, y, direccion); // Crea una nueva instancia de Veneno
+            ultimoDisparo = tiempoActual; // Actualiza el tiempo del último disparo
+        }
     }
 
 }
